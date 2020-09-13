@@ -5,7 +5,7 @@ Fanmade tool for viewing and editing Phigros's chart files (Work in progress)
 Working on chart viewing engine, which is mostly figured out (judge line movements and all 4  types of notes)
 Currently can only load one built in chart. 
 
-###To do
+#### To do
 * Hit particle
 * Load external chart and music
 * Chart editor functionalities
