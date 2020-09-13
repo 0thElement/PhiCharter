@@ -11,8 +11,8 @@ Currently can only load one built in chart.
 * Chart editor functionalities
 
 ## Technologies
-Built with Unity version 2019.1.14f
-Plugins: [Json.Net](https://github.com/JamesNK/Newtonsoft.Json)
+* Built with Unity version 2019.1.14f
+* Plugins: [Json.Net](https://github.com/JamesNK/Newtonsoft.Json)
 
 ## Credits
 Credit to S##hwarzer and his Arcade repository was a good reference for this project. It's unfortunately been taken down by Github however
