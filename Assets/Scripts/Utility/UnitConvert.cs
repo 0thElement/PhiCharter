@@ -1,17 +1,16 @@
 ﻿using Phi.Chart.Component;
-using System.Collections.Generic;
 
 namespace Phi.Utility
 {
     public static class PhiUnitConvert
     {
-        public static float timeToMs(float time, float bpm)
+        public static float timeToSecond(float time, float bpm)
         {
             return time * 1.875f / bpm;
         }
-        public static float msToTime(float ms, float bpm)
+        public static float secondToTime(float second, float bpm)
         {
-            return ms * bpm / 1.875f;
+            return second * bpm / 1.875f;
         }
 
         public static float timeToFloorPosition(float time, PhiJudgeLine judgeLine)

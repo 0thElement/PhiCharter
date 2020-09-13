@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System;
 using UnityEngine;
+using UnityEngine.UI;
 using Phi.Chart.Component;
 using Phi.Chart.UI;
+using Phi.Utility;
 
 namespace Phi.Chart.View
 {
@@ -14,10 +17,12 @@ namespace Phi.Chart.View
         }
         public GameObject JudgeLinePrefab;
         public GameObject[] NotePrefab;
-        public Transform ComposingField;
+        public GameObject JudgeEffectPrefab;
+        public Transform Playground;
+        public Transform JudgeEffectLayer;
         public List<PhiJudgeLine> judgeLines;
 
-        private float time;
+        private float second;
         private bool isPlaying = false;
         public bool IsPlaying
         {
@@ -55,10 +60,10 @@ namespace Phi.Chart.View
         }
         private void UpdateJudgeLines()
         {
-            time = AudioManager.Instance.Timing;
+            second = AudioManager.Instance.Timing;
             foreach (var judgeline in judgeLines)
             {
-                judgeline.Update(time);
+                judgeline.Update(second);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Phi.Utility;
 using Phi.Chart.View;
@@ -90,7 +91,7 @@ namespace Phi.Chart.Component
 
         public void Instantiate()
         {
-            Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.JudgeLinePrefab, PhiChartViewManager.Instance.ComposingField);
+            Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.JudgeLinePrefab, PhiChartViewManager.Instance.Playground);
 
             //Load all notes
             foreach (var note in notesAbove)
@@ -103,13 +104,13 @@ namespace Phi.Chart.Component
             }
         }
 
-        private void UpdateValues(float tick)
+        private void UpdateValues(float time)
         {
             foreach (var opacityevent in judgeLineDisappearEvents)
             {
-                if (opacityevent.startTime<=tick & tick<=opacityevent.endTime)
+                if (opacityevent.startTime<=time & time<=opacityevent.endTime)
                 {
-                    float dTime        = tick - opacityevent.startTime;
+                    float dTime        = time - opacityevent.startTime;
                     float duration     = opacityevent.endTime - opacityevent.startTime;
                     float opacityRange = opacityevent.end - opacityevent.start;
                     float dOpacity     = dTime/duration * opacityRange;
@@ -121,11 +122,11 @@ namespace Phi.Chart.Component
             }   
             foreach (var moveevent in judgeLineMoveEvents)
             {
-                if (moveevent.startTime<=tick & tick<=moveevent.endTime)
+                if (moveevent.startTime<=time & time<=moveevent.endTime)
                 {
                     Vector2 startPos = new Vector2(moveevent.start-0.5f, moveevent.start2-0.5f);
                     Vector2 endPos = new Vector2(moveevent.end-0.5f, moveevent.end2-0.5f);
-                    float dTime = tick - moveevent.startTime;
+                    float dTime = time - moveevent.startTime;
                     float duration = moveevent.endTime-moveevent.startTime;
                     Vector2 posRange = endPos - startPos;
                     Vector2 dPos = dTime/duration * posRange;
@@ -139,9 +140,9 @@ namespace Phi.Chart.Component
             }
             foreach (var rotateevent in judgeLineRotateEvents)
             {
-                if (rotateevent.startTime<=tick & tick<=rotateevent.endTime)
+                if (rotateevent.startTime<=time & time<=rotateevent.endTime)
                 {
-                    float dTime      = tick - rotateevent.startTime;
+                    float dTime      = time - rotateevent.startTime;
                     float duration   = rotateevent.endTime - rotateevent.startTime;
                     float angleRange = rotateevent.end - rotateevent.start;
                     float dAngle     = dTime/duration * angleRange;
@@ -152,36 +153,38 @@ namespace Phi.Chart.Component
                 }
             }
         }
-        public void Update(float time)
+        public void Update(float second)
         {
             //Update self's state
-            float tick=PhiUnitConvert.msToTime(time, bpm);
-            UpdateValues(tick);
+            float time=PhiUnitConvert.secondToTime(second, bpm);
+            UpdateValues(time);
             JudgeLineRenderer.startColor = JudgeLineRenderer.endColor = currentColor;
             JudgeLineTransform.localEulerAngles = new Vector3(0, 0, currentRotation);
             JudgeLineTransform.localPosition = currentPosition;
 
             //Update all contained notes
-            float currentFloorPosition = PhiUnitConvert.timeToFloorPosition(tick, this);
+            float currentFloorPosition = PhiUnitConvert.timeToFloorPosition(time, this);
             foreach (var note in notesAbove)
             {
-                if (tick>note.time + note.holdTime || (note.floorPosition -  currentFloorPosition) > 5)
+                if (note.Enable & time >= note.time) note.Judge(time);
+                if (time>note.time + note.holdTime || (note.floorPosition -  currentFloorPosition) > 5)
                 {
                     note.Enable=false;
                     continue;
                 }
                 note.Enable=true;
-                note.Update(currentFloorPosition);
+                note.Update(currentFloorPosition, time);
             }
             foreach (var note in notesBelow)
             {
-                if (tick>note.time + note.holdTime || (note.floorPosition -  currentFloorPosition) > 5)
+                if (note.Enable & time >= note.time) note.Judge(time);
+                if (time>note.time + note.holdTime || (note.floorPosition -  currentFloorPosition) > 5)
                 {
                     note.Enable=false;
                     continue;
                 }
                 note.Enable=true;
-                note.Update(currentFloorPosition);
+                note.Update(currentFloorPosition, time);
             }
         }
     }
