@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using Phi.Chart.View;
 using Phi.Utility;
 
@@ -18,6 +19,8 @@ namespace Phi.Chart.Component
         private SpriteRenderer HoldHeadRenderer;
         private SpriteRenderer HoldBodyRenderer;
         private SpriteRenderer HoldTailRenderer;
+        private List<JudgeEffect> JudgeEffects = new List<JudgeEffect>();
+        private Transform Container;
         private Transform NoteTransform;
         private Transform HoldBodyTransform;
         private Transform HoldTailTransform;
@@ -79,8 +82,17 @@ namespace Phi.Chart.Component
                     float holdFloorPositionSpan = (holdEndFloorPosition - floorPosition)*5;
 
                     HoldBodyTransform.localScale    = new Vector3(1f, holdFloorPositionSpan / 3.8f, 1f);
-                    HoldTailTransform.localPosition = new Vector3(0f, holdFloorPositionSpan + 0.1f, 0f);
+                    HoldTailTransform.localPosition = new Vector3(0f, holdFloorPositionSpan + 0.2f, 0f);
                 }
+
+                float timeStep = PhiUnitConvert.secondToTime(0.15f, JudgeLine.bpm);
+                for (float t=0; t<=holdTime; t+=timeStep)
+                {
+                    JudgeEffect judgeEffect = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.JudgeEffectPrefab, PhiChartViewManager.Instance.JudgeEffectLayer).GetComponent<JudgeEffect>();
+                    judgeEffect.Animator.enabled=false;
+                    JudgeEffects.Add(judgeEffect);
+                }
+                if (type==3) Debug.Log(JudgeEffects.Count);
             }
         }
 
@@ -91,10 +103,18 @@ namespace Phi.Chart.Component
             currentPosition.x = positionX;
             currentPosition.y = floorPosition;
         }
-        public void Update(float currentFloorPosition)
+        public void Update(float currentFloorPosition, float currenttime)
         {
             currentPosition.y = (floorPosition - currentFloorPosition) * 5;
             NoteTransform.localPosition = currentPosition;
+        }
+
+        public void Judge(float currenttime)
+        {
+            int indexToPlay;
+            if (type!=3) indexToPlay=0;
+            else indexToPlay = (int)((currenttime - time) / holdTime * (JudgeEffects.Count-1));
+            JudgeEffects[indexToPlay].PlayAt(JudgeLine.JudgeLineTransform.TransformPoint(new Vector2(currentPosition.x, 0)));
         }
     }
 }

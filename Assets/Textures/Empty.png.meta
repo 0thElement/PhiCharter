@@ -1,16 +1,7 @@
 fileFormatVersion: 2
-guid: 46f771441fedf3c449297cff0bcd6f09
+guid: f6fa25fa88ccfa344b6209ec3c461af3
 TextureImporter:
-  internalIDToNameTable:
-  - first:
-      213: 1646434677200056276
-    second: Hold_Tail
-  - first:
-      213: -6942091846886111535
-    second: Hold_Head
-  - first:
-      213: 455642677115656186
-    second: Hold_Body
+  internalIDToNameTable: []
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -45,16 +36,16 @@ TextureImporter:
     mipBias: -100
     wrapU: 1
     wrapV: 1
-    wrapW: 1
+    wrapW: -1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
-  alignment: 7
-  spritePivot: {x: 0.5, y: 0}
-  spritePixelsToUnits: 500
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -91,74 +82,11 @@ TextureImporter:
     androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: Hold_Tail
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 1949
-        width: 989
-        height: 50
-      alignment: 2
-      pivot: {x: 0.5, y: 1}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fc1c24a7a7783994e88995e6b019a336
-      internalID: 1646434677200056276
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hold_Head
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 989
-        height: 50
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9163f22dbcb1a394caccbc2c57625e4f
-      internalID: -6942091846886111535
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Hold_Body
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 50
-        width: 989
-        height: 1900
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6bd72dd3a25b7904f906cbdd774531f9
-      internalID: 455642677115656186
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
-    spriteID: a317ae51379747649add5bf32a64086b
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
