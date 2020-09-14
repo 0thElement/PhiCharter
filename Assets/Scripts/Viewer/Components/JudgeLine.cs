@@ -132,8 +132,8 @@ namespace Phi.Chart.Component
                     Vector2 dPos = dTime/duration * posRange;
 
                     currentPosition = (startPos+dPos);
-                    currentPosition.y=currentPosition.y*10;
-                    currentPosition.x=currentPosition.x*18;
+                    currentPosition.y=currentPosition.y*720;
+                    currentPosition.x=currentPosition.x*1280;
 
                     continue;
                 }

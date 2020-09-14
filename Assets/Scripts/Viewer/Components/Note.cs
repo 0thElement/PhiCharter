@@ -16,9 +16,6 @@ namespace Phi.Chart.Component
         public float floorPosition { get; set; }
 
         private SpriteRenderer NoteRenderer;
-        private SpriteRenderer HoldHeadRenderer;
-        private SpriteRenderer HoldBodyRenderer;
-        private SpriteRenderer HoldTailRenderer;
         private List<JudgeEffect> JudgeEffects = new List<JudgeEffect>();
         private Transform Container;
         private Transform NoteTransform;
@@ -36,8 +33,7 @@ namespace Phi.Chart.Component
             set
             {
                 enable=value;
-                if (type!=3) NoteRenderer.enabled=value;
-                else HoldHeadRenderer.enabled = HoldBodyRenderer.enabled = HoldTailRenderer.enabled = value;
+                NoteRenderer.enabled=value;
             }
         }
 
@@ -63,27 +59,9 @@ namespace Phi.Chart.Component
                 instance = value;
                 NoteTransform = instance.GetComponent<Transform>();
 
-                if (type!=3) 
-                {
-                    NoteRenderer = instance.GetComponent<SpriteRenderer>();
-                }
-                else
-                {
-                    HoldHeadRenderer  = NoteTransform.GetChild(0).GetComponent<SpriteRenderer>();
-                    HoldBodyRenderer  = NoteTransform.GetChild(1).GetComponent<SpriteRenderer>();
-                    HoldBodyTransform = NoteTransform.GetChild(1).GetComponent<Transform>();
-                    HoldTailRenderer  = NoteTransform.GetChild(2).GetComponent<SpriteRenderer>();
-                    HoldTailTransform = NoteTransform.GetChild(2).GetComponent<Transform>();
+                NoteRenderer = instance.GetComponent<SpriteRenderer>();
 
-                    //(Set up hold note's shape)
-                    //At scaling of 1, a hold note (all 3 parts) spans 4 unit
-                    //Head and tail spans 0.2 unit altogether
-                    float holdEndFloorPosition = PhiUnitConvert.timeToFloorPosition(time + holdTime, JudgeLine);
-                    float holdFloorPositionSpan = (holdEndFloorPosition - floorPosition)*5;
-
-                    HoldBodyTransform.localScale    = new Vector3(1f, holdFloorPositionSpan / 3.8f, 1f);
-                    HoldTailTransform.localPosition = new Vector3(0f, holdFloorPositionSpan + 0.2f, 0f);
-                }
+                if (type==3) NoteRenderer.size = new Vector2(160, (PhiUnitConvert.timeToFloorPosition(time+holdTime, JudgeLine) - floorPosition)*360);
 
                 float timeStep = PhiUnitConvert.secondToTime(0.15f, JudgeLine.bpm);
                 for (float t=0; t<=holdTime; t+=timeStep)
@@ -92,7 +70,6 @@ namespace Phi.Chart.Component
                     judgeEffect.Animator.enabled=false;
                     JudgeEffects.Add(judgeEffect);
                 }
-                if (type==3) Debug.Log(JudgeEffects.Count);
             }
         }
 
@@ -100,12 +77,12 @@ namespace Phi.Chart.Component
         {
             JudgeLine = parent;
             Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.NotePrefab[type-1], Container);
-            currentPosition.x = positionX;
+            currentPosition.x = positionX * 64;
             currentPosition.y = floorPosition;
         }
         public void Update(float currentFloorPosition, float currenttime)
         {
-            currentPosition.y = (floorPosition - currentFloorPosition) * 5;
+            currentPosition.y = (floorPosition - currentFloorPosition) * 360;
             NoteTransform.localPosition = currentPosition;
         }
 
@@ -114,6 +91,7 @@ namespace Phi.Chart.Component
             int indexToPlay;
             if (type!=3) indexToPlay=0;
             else indexToPlay = (int)((currenttime - time) / holdTime * (JudgeEffects.Count-1));
+            if (indexToPlay >= JudgeEffects.Count) return;
             JudgeEffects[indexToPlay].PlayAt(JudgeLine.JudgeLineTransform.TransformPoint(new Vector2(currentPosition.x, 0)));
         }
     }
