@@ -16,4 +16,4 @@ Currently can only load one built in chart.
 * Plugins: [Json.Net](https://github.com/JamesNK/Newtonsoft.Json)
 
 ## Credits
-Credit to Schwarzer and his Arcade repository was a good reference for this project. It's unfortunately been taken down by DMCA however
+Credit to Schwarzer. His Arcade repository was a good reference for this project. It's unfortunately been taken down by DMCA however
