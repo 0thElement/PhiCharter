@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Phi.Utility;
 using Phi.Chart.View;
 
 namespace Phi.Chart.Component
 {
-    public class SpeedEvent    {
+    public class SpeedEvent
+    {
         public float startTime { get; set; } 
         public float endTime { get; set; } 
         public float value { get; set; } 
         public float floorPosition { get; set; }
     }
 
-    public class JudgeLineDisappearEvent    {
+    public class JudgeLineDisappearEvent
+    {
         public float startTime { get; set; } 
         public float endTime { get; set; } 
         public float start { get; set; } 
@@ -22,7 +23,8 @@ namespace Phi.Chart.Component
         public float end2 { get; set; } 
     }
 
-    public class JudgeLineMoveEvent    {
+    public class JudgeLineMoveEvent
+    {
         public float startTime { get; set; } 
         public float endTime { get; set; } 
         public float start { get; set; } 
@@ -31,7 +33,8 @@ namespace Phi.Chart.Component
         public float end2 { get; set; } 
     }
 
-    public class JudgeLineRotateEvent    {
+    public class JudgeLineRotateEvent 
+    {
         public float startTime { get; set; } 
         public float endTime { get; set; } 
         public float start { get; set; } 
@@ -42,6 +45,7 @@ namespace Phi.Chart.Component
 
     public class PhiJudgeLine
     {
+        //Inputted Line Properties
         public int numOfNotes { get; set; } 
         public int numOfNotesAbove { get; set; } 
         public int numOfNotesBelow { get; set; } 
@@ -53,25 +57,11 @@ namespace Phi.Chart.Component
         public List<JudgeLineMoveEvent> judgeLineMoveEvents { get; set; } 
         public List<JudgeLineRotateEvent> judgeLineRotateEvents { get; set; } 
 
+        //Scene interactions
         public Transform JudgeLineTransform;
         private LineRenderer JudgeLineRenderer;
         public Transform NoteAboveLayer;
         public Transform NoteBelowLayer;
-
-        private Color currentColor = new Color(1f, 1f, 1f, 1f);
-        private Vector2 currentPosition = new Vector2(0f, 0f);
-        private float currentRotation = 0;
-
-        public PhiJudgeLine()
-        {
-            numOfNotes = numOfNotesAbove = numOfNotesBelow = 0;
-            bpm = 100;
-            speedEvents = new List<SpeedEvent>();
-            judgeLineDisappearEvents = new List<JudgeLineDisappearEvent>();
-            judgeLineMoveEvents = new List<JudgeLineMoveEvent>();
-            judgeLineRotateEvents = new List<JudgeLineRotateEvent>();
-        }
-
         protected GameObject instance;
         public GameObject Instance
         {
@@ -89,9 +79,23 @@ namespace Phi.Chart.Component
             }
         }
 
-        public void Instantiate()
+        //Line data
+        private Color currentColor = new Color(1f, 1f, 1f, 1f);
+        private Vector2 currentPosition = new Vector2(0f, 0f);
+        private float currentRotation = 0;
+
+        public PhiJudgeLine()
         {
-            Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.JudgeLinePrefab, PhiChartViewManager.Instance.Playground);
+            numOfNotes = numOfNotesAbove = numOfNotesBelow = 0;
+            bpm = 100;
+            speedEvents = new List<SpeedEvent>();
+            judgeLineDisappearEvents = new List<JudgeLineDisappearEvent>();
+            judgeLineMoveEvents = new List<JudgeLineMoveEvent>();
+            judgeLineRotateEvents = new List<JudgeLineRotateEvent>();
+        }
+        public void Instantiate (Transform Container)
+        {
+            Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.JudgeLinePrefab, Container);
 
             //Load all notes
             foreach (var note in notesAbove)
@@ -104,8 +108,9 @@ namespace Phi.Chart.Component
             }
         }
 
-        private void UpdateValues(float time)
+        private void UpdateValues (float time)
         {
+            //Might clean up later
             foreach (var opacityevent in judgeLineDisappearEvents)
             {
                 if (opacityevent.startTime<=time & time<=opacityevent.endTime)
@@ -153,7 +158,7 @@ namespace Phi.Chart.Component
                 }
             }
         }
-        public void Update(float second)
+        public void Update (float second)
         {
             //Update self's state
             float time=PhiUnitConvert.secondToTime(second, bpm);
@@ -166,24 +171,28 @@ namespace Phi.Chart.Component
             float currentFloorPosition = PhiUnitConvert.timeToFloorPosition(time, this);
             foreach (var note in notesAbove)
             {
-                if (note.Enable & time >= note.time) note.Judge(time);
+                //Attempt to play judge effect as long as the note is still playing (JudgeEffect'll handle playing the correct loop time)
+                if (note.Enabled & time >= note.time) note.Judge(time);
+                //Disable judged notes or notes too far ahead
                 if (time>note.time + note.holdTime || (note.floorPosition -  currentFloorPosition) > 5)
                 {
-                    note.Enable=false;
+                    note.Enabled=false;
                     continue;
                 }
-                note.Enable=true;
+                note.Enabled=true;
                 note.Update(currentFloorPosition, time);
             }
+
+            //Same as above
             foreach (var note in notesBelow)
             {
-                if (note.Enable & time >= note.time) note.Judge(time);
+                if (note.Enabled & time >= note.time) note.Judge(time);
                 if (time>note.time + note.holdTime || (note.floorPosition -  currentFloorPosition) > 5)
                 {
-                    note.Enable=false;
+                    note.Enabled=false;
                     continue;
                 }
-                note.Enable=true;
+                note.Enabled=true;
                 note.Update(currentFloorPosition, time);
             }
         }

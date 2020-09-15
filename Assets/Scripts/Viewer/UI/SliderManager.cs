@@ -36,15 +36,15 @@ namespace Phi.Chart.UI
         {
             if (!holding) Slider.value = AudioManager.Instance.Timing;
         }
-        public void OnPointerDown(PointerEventData eventData)
+        public void OnPointerDown (PointerEventData eventData)
         {
             holding = true;
         }
-        public void OnPointerUp(PointerEventData eventData)
+        public void OnPointerUp (PointerEventData eventData)
         {
             holding = false;
         }
-        public void OnDrag(PointerEventData eventData)
+        public void OnDrag (PointerEventData eventData)
         {
             AudioManager.Instance.Timing = Slider.value;
         }
