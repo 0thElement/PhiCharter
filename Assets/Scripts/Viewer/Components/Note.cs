@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Phi.Chart.View;
 using Phi.Utility;
 
 namespace Phi.Chart.Component
 {
-    public class PhiNote
+    public class PhiNote : IComparable<PhiNote>
     {
         private PhiJudgeLine JudgeLine;
         public int type { get; set; }
@@ -14,14 +15,47 @@ namespace Phi.Chart.Component
         public float holdTime { get; set; }
         public float speed { get; set; }
         public float floorPosition { get; set; }
+        protected bool isHighlighted;
+        public bool IsHighlighted
+        {
+            get
+            {
+                return isHighlighted;
+            }
+            set
+            {
+                isHighlighted=value;
+                NoteRenderer.sprite = isHighlighted ? PhiChartViewManager.Instance.NoteHighlightSprite[type-1]: PhiChartViewManager.Instance.NoteSprite[type-1];
+            }
+        }
 
         private SpriteRenderer NoteRenderer;
         private List<JudgeEffect> JudgeEffects = new List<JudgeEffect>();
         private Transform Container;
         private Transform NoteTransform;
-        private Transform HoldBodyTransform;
-        private Transform HoldTailTransform;
         private Vector2 currentPosition;
+
+        //Overloading operator
+        public int CompareTo(PhiNote other)
+        {
+            return time.CompareTo(other.time);
+        }
+        public static bool operator >  (PhiNote operand1, PhiNote operand2)
+        {
+        return operand1.CompareTo(operand2) == 1;   
+        }
+        public static bool operator <  (PhiNote operand1, PhiNote operand2)
+        {
+        return operand1.CompareTo(operand2) == -1;
+        }
+        public static bool operator >=  (PhiNote operand1, PhiNote operand2)
+        {
+        return operand1.CompareTo(operand2) >= 0;
+        }
+        public static bool operator <=  (PhiNote operand1, PhiNote operand2)
+        {
+        return operand1.CompareTo(operand2) <= 0;
+        }
 
         private bool enable = false;
         public bool Enable
@@ -61,6 +95,8 @@ namespace Phi.Chart.Component
 
                 NoteRenderer = instance.GetComponent<SpriteRenderer>();
 
+                IsHighlighted = false;
+
                 if (type==3) NoteRenderer.size = new Vector2(160, (PhiUnitConvert.timeToFloorPosition(time+holdTime, JudgeLine) - floorPosition)*360);
 
                 float timeStep = PhiUnitConvert.secondToTime(0.15f, JudgeLine.bpm);
@@ -76,7 +112,8 @@ namespace Phi.Chart.Component
         public void Instantiate(int type, PhiJudgeLine parent, Transform Container)
         {
             JudgeLine = parent;
-            Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.NotePrefab[type-1], Container);
+            if (type==3) Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.HoldPrefab, Container);
+                    else Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.NotePrefab, Container);
             currentPosition.x = positionX * 64;
             currentPosition.y = floorPosition;
         }
@@ -93,6 +130,12 @@ namespace Phi.Chart.Component
             else indexToPlay = (int)((currenttime - time) / holdTime * (JudgeEffects.Count-1));
             if (indexToPlay >= JudgeEffects.Count) return;
             JudgeEffects[indexToPlay].PlayAt(JudgeLine.JudgeLineTransform.TransformPoint(new Vector2(currentPosition.x, 0)));
+        }
+
+        public bool IsItself(PhiNote other)
+        {
+            if (other==null) return false;
+            return this.instance.GetInstanceID() == other.Instance.GetInstanceID();
         }
     }
 }
