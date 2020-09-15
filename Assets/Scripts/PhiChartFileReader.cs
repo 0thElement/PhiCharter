@@ -20,7 +20,7 @@ namespace Phi.Chart.View
         public void ReadChart()
         {
             CurrentChart = JsonConvert.DeserializeObject<PhiChart>(File.ReadAllText(Path.Combine(Application.dataPath, "Scripts", "testChart.json")));
-            PhiChartViewManager.Instance.Refresh();
+            PhiChartView.Instance.Refresh();
         }
     }
 }   

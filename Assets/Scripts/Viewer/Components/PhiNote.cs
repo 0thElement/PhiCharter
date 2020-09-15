@@ -9,6 +9,8 @@ namespace Phi.Chart.Component
     public class PhiNote : IComparable<PhiNote>
     {
         private PhiJudgeLine JudgeLine;
+
+        //Inputted Note Properties
         public int type { get; set; }
         public float time { get; set; }
         public float positionX { get; set; }
@@ -25,18 +27,64 @@ namespace Phi.Chart.Component
             set
             {
                 isHighlighted=value;
-                NoteRenderer.sprite = isHighlighted ? PhiChartViewManager.Instance.NoteHighlightSprite[type-1]: PhiChartViewManager.Instance.NoteSprite[type-1];
+                NoteRenderer.sprite = isHighlighted ? PhiChartView.Instance.NoteHighlightSprite[type-1]: PhiChartView.Instance.NoteSprite[type-1];
             }
         }
-
+        
+        //Scene interactions
         private SpriteRenderer NoteRenderer;
-        private List<JudgeEffect> JudgeEffects = new List<JudgeEffect>();
+        private List<PhiJudgeEffect> JudgeEffects = new List<PhiJudgeEffect>();
         private Transform Container;
         private Transform NoteTransform;
         private Vector2 currentPosition;
 
+        private bool enabled = false;
+        public bool Enabled
+        {
+            get
+            {
+                return enabled;
+            }
+            set
+            {
+                enabled=value;
+                NoteRenderer.enabled=value;
+            }
+        }
+
+        protected GameObject instance;
+        public GameObject Instance
+        {
+            get
+            {
+                return instance;
+            }
+            set
+            {
+                instance = value;
+                //Get object's component
+                NoteTransform = instance.GetComponent<Transform>();
+                NoteRenderer = instance.GetComponent<SpriteRenderer>();
+
+                //Initialize properties
+                IsHighlighted = false;
+                currentPosition.y = floorPosition;
+                currentPosition.x = positionX * 64;
+                if (type==3) NoteRenderer.size = new Vector2(160, (PhiUnitConvert.timeToFloorPosition(time+holdTime, JudgeLine) - floorPosition)*360);
+
+                //Set up judge effect objects
+                float timeStep = PhiUnitConvert.secondToTime(0.15f, JudgeLine.bpm);
+                for (float t=0; t<=holdTime; t+=timeStep)
+                {
+                    PhiJudgeEffect judgeEffect = UnityEngine.Object.Instantiate(PhiChartView.Instance.JudgeEffectPrefab, PhiChartView.Instance.JudgeEffectLayer).GetComponent<PhiJudgeEffect>();
+                    judgeEffect.Animator.enabled=false;
+                    JudgeEffects.Add(judgeEffect);
+                }
+            }
+        }
+
         //Overloading operator
-        public int CompareTo(PhiNote other)
+        public int CompareTo (PhiNote other)
         {
             return time.CompareTo(other.time);
         }
@@ -56,21 +104,8 @@ namespace Phi.Chart.Component
         {
         return operand1.CompareTo(operand2) <= 0;
         }
-
-        private bool enable = false;
-        public bool Enable
-        {
-            get
-            {
-                return enable;
-            }
-            set
-            {
-                enable=value;
-                NoteRenderer.enabled=value;
-            }
-        }
-
+        
+        //Constructor
         public PhiNote()
         {
             type = 1;
@@ -81,41 +116,11 @@ namespace Phi.Chart.Component
             floorPosition=0;
         }
 
-        protected GameObject instance;
-        public GameObject Instance
-        {
-            get
-            {
-                return instance;
-            }
-            set
-            {
-                instance = value;
-                NoteTransform = instance.GetComponent<Transform>();
-
-                NoteRenderer = instance.GetComponent<SpriteRenderer>();
-
-                IsHighlighted = false;
-
-                if (type==3) NoteRenderer.size = new Vector2(160, (PhiUnitConvert.timeToFloorPosition(time+holdTime, JudgeLine) - floorPosition)*360);
-
-                float timeStep = PhiUnitConvert.secondToTime(0.15f, JudgeLine.bpm);
-                for (float t=0; t<=holdTime; t+=timeStep)
-                {
-                    JudgeEffect judgeEffect = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.JudgeEffectPrefab, PhiChartViewManager.Instance.JudgeEffectLayer).GetComponent<JudgeEffect>();
-                    judgeEffect.Animator.enabled=false;
-                    JudgeEffects.Add(judgeEffect);
-                }
-            }
-        }
-
-        public void Instantiate(int type, PhiJudgeLine parent, Transform Container)
+        public void Instantiate (int type, PhiJudgeLine parent, Transform Container)
         {
             JudgeLine = parent;
-            if (type==3) Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.HoldPrefab, Container);
-                    else Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.NotePrefab, Container);
-            currentPosition.x = positionX * 64;
-            currentPosition.y = floorPosition;
+            if (type==3) Instance = UnityEngine.Object.Instantiate(PhiChartView.Instance.HoldPrefab, Container);
+                    else Instance = UnityEngine.Object.Instantiate(PhiChartView.Instance.NotePrefab, Container);
         }
         public void Update(float currentFloorPosition, float currenttime)
         {
@@ -123,7 +128,7 @@ namespace Phi.Chart.Component
             NoteTransform.localPosition = currentPosition;
         }
 
-        public void Judge(float currenttime)
+        public void Judge (float currenttime)
         {
             int indexToPlay;
             if (type!=3) indexToPlay=0;
@@ -132,7 +137,7 @@ namespace Phi.Chart.Component
             JudgeEffects[indexToPlay].PlayAt(JudgeLine.JudgeLineTransform.TransformPoint(new Vector2(currentPosition.x, 0)));
         }
 
-        public bool IsItself(PhiNote other)
+        public bool IsTheSameAs (PhiNote other)
         {
             if (other==null) return false;
             return this.instance.GetInstanceID() == other.Instance.GetInstanceID();

@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
-using System;
 using UnityEngine;
-using UnityEngine.UI;
 using Phi.Chart.Component;
 using Phi.Chart.UI;
-using Phi.Utility;
 
 namespace Phi.Chart.View
 {
-    public class PhiChartViewManager : MonoBehaviour
+    public class PhiChartView : MonoBehaviour
     {
-        public static PhiChartViewManager Instance { get; private set; }
+        public static PhiChartView Instance { get; private set; }
         private void Awake()
         {
             Instance = this;
@@ -50,7 +47,6 @@ namespace Phi.Chart.View
         {
             ReloadJudgeLines();
             HighlightNotes();
-            Debug.Log(judgeLines[0].notesAbove[0].IsItself(judgeLines[0].notesAbove[0]));
 
             IsPlaying = true;//
             SliderManager.Instance.Enable = true;//
@@ -62,7 +58,7 @@ namespace Phi.Chart.View
             foreach (var judgeline in PhiChartFileReader.Instance.CurrentChart.JudgeLineList)
             {
                 judgeLines.Add(judgeline);
-                judgeline.Instantiate();
+                judgeline.Instantiate(Playground);
             }
         }
         private void UpdateJudgeLines()
@@ -103,29 +99,33 @@ namespace Phi.Chart.View
                 }
             }
         }
-        private PhiNote FindSameTiming(PhiNote note)
+        private PhiNote FindSameTiming (PhiNote note)
         {
+            //Will find a better algorithm to do this
             int foundindex;
             foreach (var judgeline in judgeLines)
             {
                 foundindex = judgeline.notesAbove.BinarySearch(note);
                 if (foundindex >=0)
                 {
-                    if (note.IsItself(judgeline.notesAbove[foundindex]))
+                    if (note.IsTheSameAs(judgeline.notesAbove[foundindex]))
                     {
                         try {if (note == judgeline.notesAbove[foundindex-1]) return judgeline.notesAbove[foundindex-1];} catch{};
                         try {if (note == judgeline.notesAbove[foundindex+1]) return judgeline.notesAbove[foundindex+1];} catch{};
-                    } else return judgeline.notesAbove[foundindex];
+                    } 
+                    else return judgeline.notesAbove[foundindex];
                 }
+
                 foundindex = judgeline.notesBelow.BinarySearch(note);
                 if (foundindex >=0)
                 {
-                    if (note.IsItself(judgeline.notesBelow[foundindex]))
+                    if (note.IsTheSameAs(judgeline.notesBelow[foundindex]))
                     {
                         try {if (note == judgeline.notesBelow[foundindex-1]) return judgeline.notesBelow[foundindex-1];} catch{};
                         try {if (note == judgeline.notesBelow[foundindex+1]) return judgeline.notesBelow[foundindex+1];} catch{};
                         continue;
-                    } else return judgeline.notesBelow[foundindex];
+                    } 
+                    else return judgeline.notesBelow[foundindex];
                 }
             }
             return null;
