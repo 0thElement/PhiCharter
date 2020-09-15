@@ -1867,11 +1867,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JudgeLinePrefab: {fileID: 4806315499600775640, guid: bf9ce71d96914a54ab44b2fe8f4bef48,
     type: 3}
-  NotePrefab:
-  - {fileID: 2254690193237637823, guid: f03a258721a5bec4aa535a6010809a7b, type: 3}
-  - {fileID: 4840131335798486856, guid: bab6ba7685a99f64998b21e84bf266d5, type: 3}
-  - {fileID: 220485534074541174, guid: 4dd5d104e93ec9149ae66921b7eed899, type: 3}
-  - {fileID: 4572900928364917503, guid: 396081a2429968442bac6c5975263192, type: 3}
+  NotePrefab: {fileID: 2254690193237637823, guid: f03a258721a5bec4aa535a6010809a7b,
+    type: 3}
+  HoldPrefab: {fileID: 220485534074541174, guid: 4dd5d104e93ec9149ae66921b7eed899,
+    type: 3}
+  NoteSprite:
+  - {fileID: 21300000, guid: ab473a7229f841541a68f978391bc3fd, type: 3}
+  - {fileID: 21300000, guid: 713cb8809feb1c6448b5e07d9f63746c, type: 3}
+  - {fileID: 21300000, guid: 46f771441fedf3c449297cff0bcd6f09, type: 3}
+  - {fileID: 21300000, guid: e908febff89109a4698fc116a0009c7c, type: 3}
+  NoteHighlightSprite:
+  - {fileID: 21300000, guid: b866d1537b9027848bb9d0f354969707, type: 3}
+  - {fileID: 21300000, guid: ac4e27473d8298c488ee9aede564eb69, type: 3}
+  - {fileID: 21300000, guid: 46f771441fedf3c449297cff0bcd6f09, type: 3}
+  - {fileID: 21300000, guid: 5903b131fa841114bbaf15fa451ab06c, type: 3}
   JudgeEffectPrefab: {fileID: 85788194691038453, guid: 80d9dc32f8f333b45a30305bcb654f3b,
     type: 3}
   Playground: {fileID: 595442651}

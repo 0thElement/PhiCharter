@@ -6,7 +6,6 @@ Working on chart viewing engine, which is mostly figured out (judge line movemen
 Currently can only load one built in chart. 
 
 #### To do
-* Note Highlight
 * Combo and score counter
 * Load external chart and music
 * Chart editor functionalities
