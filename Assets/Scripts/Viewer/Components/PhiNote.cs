@@ -27,7 +27,7 @@ namespace Phi.Chart.Component
             set
             {
                 isHighlighted=value;
-                NoteRenderer.sprite = isHighlighted ? PhiChartViewManager.Instance.NoteHighlightSprite[type-1]: PhiChartViewManager.Instance.NoteSprite[type-1];
+                NoteRenderer.sprite = isHighlighted ? PhiChartView.Instance.NoteHighlightSprite[type-1]: PhiChartView.Instance.NoteSprite[type-1];
             }
         }
         
@@ -76,7 +76,7 @@ namespace Phi.Chart.Component
                 float timeStep = PhiUnitConvert.secondToTime(0.15f, JudgeLine.bpm);
                 for (float t=0; t<=holdTime; t+=timeStep)
                 {
-                    PhiJudgeEffect judgeEffect = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.JudgeEffectPrefab, PhiChartViewManager.Instance.JudgeEffectLayer).GetComponent<PhiJudgeEffect>();
+                    PhiJudgeEffect judgeEffect = UnityEngine.Object.Instantiate(PhiChartView.Instance.JudgeEffectPrefab, PhiChartView.Instance.JudgeEffectLayer).GetComponent<PhiJudgeEffect>();
                     judgeEffect.Animator.enabled=false;
                     JudgeEffects.Add(judgeEffect);
                 }
@@ -119,8 +119,8 @@ namespace Phi.Chart.Component
         public void Instantiate (int type, PhiJudgeLine parent, Transform Container)
         {
             JudgeLine = parent;
-            if (type==3) Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.HoldPrefab, Container);
-                    else Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.NotePrefab, Container);
+            if (type==3) Instance = UnityEngine.Object.Instantiate(PhiChartView.Instance.HoldPrefab, Container);
+                    else Instance = UnityEngine.Object.Instantiate(PhiChartView.Instance.NotePrefab, Container);
         }
         public void Update(float currentFloorPosition, float currenttime)
         {

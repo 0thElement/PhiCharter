@@ -5,9 +5,9 @@ using Phi.Chart.UI;
 
 namespace Phi.Chart.View
 {
-    public class PhiChartViewManager : MonoBehaviour
+    public class PhiChartView : MonoBehaviour
     {
-        public static PhiChartViewManager Instance { get; private set; }
+        public static PhiChartView Instance { get; private set; }
         private void Awake()
         {
             Instance = this;

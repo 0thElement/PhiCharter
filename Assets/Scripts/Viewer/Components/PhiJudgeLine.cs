@@ -95,7 +95,7 @@ namespace Phi.Chart.Component
         }
         public void Instantiate (Transform Container)
         {
-            Instance = UnityEngine.Object.Instantiate(PhiChartViewManager.Instance.JudgeLinePrefab, Container);
+            Instance = UnityEngine.Object.Instantiate(PhiChartView.Instance.JudgeLinePrefab, Container);
 
             //Load all notes
             foreach (var note in notesAbove)
