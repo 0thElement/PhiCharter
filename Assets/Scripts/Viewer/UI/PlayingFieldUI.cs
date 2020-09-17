@@ -15,6 +15,7 @@ namespace Phi.Chart.View
 
         public Text ComboCounter;
         public Text ScoreCounter;
+        public GameObject ComboObject;
 
         private void Update()
         {
@@ -26,6 +27,8 @@ namespace Phi.Chart.View
             float scorePerNote = 1000000 / PhiChartFileReader.Instance.CurrentChart.numOfNotes;
             int combo = GetCombo();
             ComboCounter.text = combo.ToString();
+            if (combo < 3) ComboObject.SetActive(false);
+            else ComboObject.SetActive(true);
             ScoreCounter.text = Mathf.RoundToInt(combo * scorePerNote).ToString("D7");
        }
 
