@@ -24,6 +24,7 @@ namespace Phi.Chart.View
 
         private float second;
         private bool isPlaying = false;
+        private CompareNoteByTime comparer = new CompareNoteByTime();
         public bool IsPlaying
         {
             get
@@ -105,7 +106,7 @@ namespace Phi.Chart.View
             int foundindex;
             foreach (var judgeline in judgeLines)
             {
-                foundindex = judgeline.notesAbove.BinarySearch(note);
+                foundindex = judgeline.notesAbove.BinarySearch(note, comparer);
                 if (foundindex >=0)
                 {
                     if (note.IsTheSameAs(judgeline.notesAbove[foundindex]))
@@ -116,7 +117,7 @@ namespace Phi.Chart.View
                     else return judgeline.notesAbove[foundindex];
                 }
 
-                foundindex = judgeline.notesBelow.BinarySearch(note);
+                foundindex = judgeline.notesBelow.BinarySearch(note, comparer);
                 if (foundindex >=0)
                 {
                     if (note.IsTheSameAs(judgeline.notesBelow[foundindex]))

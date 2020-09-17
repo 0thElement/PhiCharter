@@ -6,7 +6,7 @@ using Phi.Utility;
 
 namespace Phi.Chart.Component
 {
-    public class PhiNote : IComparable<PhiNote>
+    public class PhiNote
     {
         private PhiJudgeLine JudgeLine;
 
@@ -82,34 +82,12 @@ namespace Phi.Chart.Component
                 }
             }
         }
-
-        //Overloading operator
-        public int CompareTo (PhiNote other)
-        {
-            return time.CompareTo(other.time);
-        }
-        public static bool operator >  (PhiNote operand1, PhiNote operand2)
-        {
-        return operand1.CompareTo(operand2) == 1;   
-        }
-        public static bool operator <  (PhiNote operand1, PhiNote operand2)
-        {
-        return operand1.CompareTo(operand2) == -1;
-        }
-        public static bool operator >=  (PhiNote operand1, PhiNote operand2)
-        {
-        return operand1.CompareTo(operand2) >= 0;
-        }
-        public static bool operator <=  (PhiNote operand1, PhiNote operand2)
-        {
-        return operand1.CompareTo(operand2) <= 0;
-        }
         
         //Constructor
-        public PhiNote()
+        public PhiNote(float time)
         {
             type = 1;
-            time = 0;
+            this.time = time;
             positionX = 0;
             holdTime = 0;
             speed = 1;
@@ -141,6 +119,22 @@ namespace Phi.Chart.Component
         {
             if (other==null) return false;
             return this.instance.GetInstanceID() == other.Instance.GetInstanceID();
+        }
+    }
+
+
+    public class CompareNoteByTime : IComparer<PhiNote>
+    {
+        public int Compare(PhiNote x, PhiNote y)
+        {
+            return x.time.CompareTo(y.time);
+        }
+    }
+    public class CompareNoteByTimeAndHoldTime : IComparer<PhiNote>
+    {
+        public int Compare(PhiNote x, PhiNote y)
+        {
+            return (x.time+x.holdTime).CompareTo(y.time+y.holdTime);
         }
     }
 }
