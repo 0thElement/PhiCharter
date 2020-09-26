@@ -50,3 +50,9 @@ TagManager:
   - name: Effect
     uniqueID: 1707204201
     locked: 0
+  - name: Pause
+    uniqueID: 3461194345
+    locked: 0
+  - name: Editor
+    uniqueID: 1470978327
+    locked: 0
