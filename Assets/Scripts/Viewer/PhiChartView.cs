@@ -2,6 +2,7 @@
 using UnityEngine;
 using Phi.Chart.Component;
 using Phi.Chart.UI;
+using Phi.Chart.Editor;
 
 namespace Phi.Chart.View
 {
@@ -48,16 +49,20 @@ namespace Phi.Chart.View
         {
             ReloadJudgeLines();
             HighlightNotes();
+            JudgeLineListManager.Instance.CreateList();
 
-            IsPlaying = true;//
-            SliderManager.Instance.Enable = true;//
-            SliderManager.Instance.Length = AudioManager.Instance.Clip.length;//
+            IsPlaying = true;
+            SliderManager.Instance.Enable = true;
+            SliderManager.Instance.Length = AudioManager.Instance.Clip.length;
         }
         private void ReloadJudgeLines()
         {
             judgeLines = new List<PhiJudgeLine>();
+            int count=0;
             foreach (var judgeline in PhiChartFileReader.Instance.CurrentChart.JudgeLineList)
             {
+                count+=1;
+                judgeline.name = "Judgeline " + count;
                 judgeLines.Add(judgeline);
                 judgeline.Instantiate(Playground);
             }

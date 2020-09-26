@@ -84,6 +84,9 @@ namespace Phi.Chart.Component
         private Vector2 currentPosition = new Vector2(0f, 0f);
         private float currentRotation = 0;
 
+        //Editor assisting
+        public string name;
+
         public PhiJudgeLine()
         {
             numOfNotes = numOfNotesAbove = numOfNotesBelow = 0;
@@ -195,6 +198,10 @@ namespace Phi.Chart.Component
                 note.Enabled=true;
                 note.Update(currentFloorPosition, time);
             }
+        }
+
+        public void SetVisibility(bool option) {
+            Instance.SetActive(option);
         }
     }
 }
